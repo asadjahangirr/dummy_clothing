@@ -16,3 +16,9 @@
   for = "/models/*"
   [headers.values]
     Cache-Control = "public, max-age=604800"
+
+# room models, textures and lighting (rename a file if you replace it)
+[[headers]]
+  for = "/store/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"

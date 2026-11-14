@@ -310,83 +310,41 @@ export function woodTexture(renderer) {
   return toTexture(c, renderer);
 }
 
-/** Subtle plaster texture for wall / floor. */
-export function plasterTexture(renderer, base, amount, seed) {
-  const s = 512;
-  const [c, g] = canvas(s, s);
-  g.fillStyle = base;
-  g.fillRect(0, 0, s, s);
-  const r = rng(seed);
-  for (let i = 0; i < 1400; i++) {
-    g.fillStyle = r() > 0.5 ? `rgba(255,255,255,${r() * amount})` : `rgba(0,0,0,${r() * amount * 0.6})`;
-    const x = r() * s, y = r() * s, rad = 4 + r() * 26;
-    g.beginPath(); g.arc(x, y, rad, 0, Math.PI * 2); g.fill();
-  }
-  grain(g, s, s, 3, seed, false);
-  const t = toTexture(c, renderer);
-  t.wrapS = t.wrapT = THREE.RepeatWrapping;
-  return t;
-}
-
-/** Hang tag artwork (front face). */
-export function tagTexture(renderer, kind, { price = '', currency = '' } = {}) {
+/** Price tag artwork: just the price and a barcode. */
+export function tagTexture(renderer, _kind, { price = '', currency = '' } = {}) {
   const w = 320, h = 600;
   const [c, g] = canvas(w, h);
-  const dark = kind === 'brand';
   const rad = 26;
-  // rounded tag with clipped corners
   g.beginPath();
   g.moveTo(rad, 0); g.lineTo(w - rad, 0); g.quadraticCurveTo(w, 0, w, rad);
   g.lineTo(w, h - rad); g.quadraticCurveTo(w, h, w - rad, h);
   g.lineTo(rad, h); g.quadraticCurveTo(0, h, 0, h - rad);
   g.lineTo(0, rad); g.quadraticCurveTo(0, 0, rad, 0);
   g.closePath();
-  g.fillStyle = dark ? '#121214' : '#e6dcc8';
+  g.fillStyle = '#ece6d9';
   g.fill();
-  if (!dark) grain(g, w, h, 14, 4);
-  // re-clip corners after grain
+  grain(g, w, h, 12, 4);
   g.globalCompositeOperation = 'destination-in';
   g.fill();
   g.globalCompositeOperation = 'source-over';
   // eyelet
-  g.fillStyle = dark ? '#b59a6a' : '#121214';
+  g.fillStyle = '#121214';
   g.beginPath(); g.arc(w / 2, 52, 22, 0, Math.PI * 2); g.fill();
   g.globalCompositeOperation = 'destination-out';
   g.beginPath(); g.arc(w / 2, 52, 12, 0, Math.PI * 2); g.fill();
   g.globalCompositeOperation = 'source-over';
 
-  const ink = dark ? '#f2f1ec' : '#121214';
-  g.fillStyle = ink;
+  g.fillStyle = '#121214';
   g.textAlign = 'center';
-  if (dark) {
-    g.font = '600 46px Geist, Arial, sans-serif';
-    g.fillText('ÆTHER', w / 2, 150);
-    g.font = '500 20px "Geist Mono", monospace';
-    g.globalAlpha = 0.7;
-    g.fillText('N°001 · DROP 01', w / 2, 192);
-    g.globalAlpha = 1;
-    g.fillRect(40, 236, w - 80, 1.5);
-    g.font = '500 24px "Geist Mono", monospace';
-    ['MIDNIGHT', 'NAVY', '', 'FLORAL', 'SHIRT'].forEach((t, i) => g.fillText(t, w / 2, 300 + i * 40));
-    g.font = '500 18px "Geist Mono", monospace';
-    g.globalAlpha = 0.55;
-    g.fillText('TAP FOR DETAILS', w / 2, h - 46);
-    g.globalAlpha = 1;
-  } else {
-    g.font = '500 22px "Geist Mono", monospace';
-    g.fillText(currency, w / 2, 160);
-    g.font = '500 88px Geist, Arial, sans-serif';
-    g.fillText(price, w / 2, 250);
-    g.fillRect(40, 290, w - 80, 1.5);
-    // barcode
-    const r = rng(9);
-    let x = 52;
-    while (x < w - 52) { const bw = 1 + Math.floor(r() * 4); g.fillRect(x, 320, bw, 110); x += bw + 1 + Math.floor(r() * 4); }
-    g.font = '500 18px "Geist Mono", monospace';
-    g.fillText('0 0 1 · 2 6 · N A V', w / 2, 462);
-    g.font = '600 22px "Geist Mono", monospace';
-    g.fillText('TAP TO BUY →', w / 2, h - 50);
-  }
-  const t = toTexture(c, renderer);
-  return t;
+  g.font = '500 24px "Geist Mono", monospace';
+  g.fillText(currency, w / 2, 176);
+  let size = 92;
+  g.font = `500 ${size}px Geist, Arial, sans-serif`;
+  while (g.measureText(price).width > w - 50 && size > 40) { size -= 4; g.font = `500 ${size}px Geist, Arial, sans-serif`; }
+  g.fillText(price, w / 2, 268);
+  g.fillRect(40, 312, w - 80, 1.5);
+  const r = rng(9);
+  let x = 52;
+  while (x < w - 52) { const bw = 1 + Math.floor(r() * 4); g.fillRect(x, 352, bw, 150); x += bw + 1 + Math.floor(r() * 4); }
+  return toTexture(c, renderer);
 }

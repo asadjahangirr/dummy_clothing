@@ -7,9 +7,12 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "test:physics": "node scripts/physics-test.mjs",
+    "build-assets": "node scripts/build-assets.mjs",
     "optimize-model": "gltf-transform optimize shirt.glb public/models/shirt.glb --compress meshopt --texture-compress false --simplify-ratio 0.3 --simplify-error 0.0008"
   },
   "dependencies": {
+    "cannon-es": "^0.20.0",
     "three": "^0.170.0",
     "three-mesh-bvh": "^0.8.3"
   },
