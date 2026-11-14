@@ -1,0 +1,20 @@
+{
+  "name": "shirt-store",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "optimize-model": "gltf-transform optimize shirt.glb public/models/shirt.glb --compress meshopt --texture-compress false --simplify-ratio 0.3 --simplify-error 0.0008"
+  },
+  "dependencies": {
+    "three": "^0.170.0",
+    "three-mesh-bvh": "^0.8.3"
+  },
+  "devDependencies": {
+    "@gltf-transform/cli": "^4.1.1",
+    "vite": "^5.4.11"
+  }
+}
