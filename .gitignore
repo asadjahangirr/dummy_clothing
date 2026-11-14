@@ -1,0 +1,12 @@
+# dependencies — Netlify installs these itself on Linux
+node_modules/
+
+# build output — Netlify builds this itself
+dist/
+
+# logs / OS / editor
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
